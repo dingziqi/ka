@@ -1,7 +1,7 @@
 {
-  "name": "template",
+  "name": "ka",
   "version": "1.0.0",
-  "description": "template repository for me",
+  "description": "markdown to static html, rendered by react",
   "main": "index.js",
   "scripts": {
     "lint": "eslint '**/*.js?(x)'"
@@ -39,7 +39,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": ""
     }
   },
   "lint-staged": {
