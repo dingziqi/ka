@@ -16,13 +16,6 @@ module.exports = {
         use: [
           'babel-loader',
           postLoder,
-          // {
-          //   loader: 'markdown-loader',
-          //   options: {
-          //     renderer: Object.assign(renderer, customRenerer),
-          //     xhtml: true,
-          //   },
-          // },
         ],
       },
       {
