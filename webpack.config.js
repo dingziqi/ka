@@ -12,11 +12,12 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js(x)$/,
+        use: ['babel-loader'],
+      },
+      {
         test: /\.md$/,
-        use: [
-          'babel-loader',
-          postLoder,
-        ],
+        use: ['babel-loader', postLoder],
       },
       {
         test: /.(css|less)$/,
@@ -28,7 +29,7 @@ module.exports = {
             options: {
               lessOptions: {
                 javascriptEnabled: true,
-                paths: [path.resolve(__dirname, 'node_modules')],
+                paths: [underRoot('node_modules')],
               },
             },
           },
@@ -44,4 +45,15 @@ module.exports = {
       }./src/template.html`,
     }),
   ],
+  resolve: {
+    extensions: ['.js', '.jsx'],
+    alias: {
+      '@components': underRoot('./src/components'),
+    },
+  },
+  stats: false,
 };
+
+function underRoot(pathStr) {
+  return path.resolve(__dirname, pathStr);
+}

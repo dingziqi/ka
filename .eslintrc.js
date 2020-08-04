@@ -17,6 +17,6 @@ module.exports = {
   },
   rules: {
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
-    'arrow-parens': 0,
+    'arrow-parens': 'as-needed',
   },
 };
