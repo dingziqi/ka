@@ -52,6 +52,9 @@ module.exports = {
     },
   },
   stats: false,
+  devServer: {
+    open: true,
+  }
 };
 
 function underRoot(pathStr) {

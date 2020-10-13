@@ -41,15 +41,6 @@ module.exports = post => {
 
   const content = marked(body);
 
-  console.log(
-    _.template(template)({
-      content,
-    }),
-  );
-  return _.template(template)({
-    content,
-    interpolate: /<inject\s([\s\S]+?)\s\/>/g,
-    // components: '',
-    // attributes,
-  });
+  _.templateSettings.interpolate = /<inject\s([\s\S]+?)\s\/>/g;
+  return _.template(template)({content});
 };
