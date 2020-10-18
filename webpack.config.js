@@ -48,12 +48,13 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      '@components': underRoot('./src/components'),
+      'Component': underRoot('./src/component'),
+      'Style': underRoot('./src/style'),
     },
   },
   stats: false,
   devServer: {
-    open: true,
+    // open: true,
   }
 };
 

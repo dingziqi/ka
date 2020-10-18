@@ -3,14 +3,9 @@ const fs = require('fs');
 const path = require('path');
 const marked = require('marked');
 const fm = require('front-matter');
-const ReactDomServer = require('react-dom/server');
+const debug = require('debug')('ka:post-loader');
 
 const renderer = require('./renderer');
-
-// const template = fs.readFileSync(
-//   path.resolve(__dirname, '../src/layout.jsx'),
-//   'utf-8',
-// );
 
 module.exports = post => {
   const { attributes, body } = fm(post);
@@ -24,23 +19,35 @@ module.exports = post => {
   } = attributes;
 
   const template = fs.readFileSync(
-    path.resolve(__dirname, `../src/templates/${layout}.jsx`),
+    path.resolve(__dirname, `../src/template/${layout}.jsx`),
     'utf-8',
   );
 
-  let components = [];
+  let injectComponent = [];
 
   marked.use({
     xhtml: true,
-    // renderer,
+    renderer,
     walkTokens(token) {
-      // console.log(token);
-      // components.push(token);
+      // debug('fullname:', token);
+
+      const type = token.task ? 'checkbox' : token.type;
+      let fullComponentName = renderer.getComponentName(type);
+
+      if (!fullComponentName) return;
+
+      const componentName = fullComponentName.split('.')[0];
+      if (injectComponent.indexOf(componentName) === -1) {
+        debug('add injected component :', componentName);
+        injectComponent.push(componentName);
+      }
     },
   });
 
   const content = marked(body);
 
-  _.templateSettings.interpolate = /<inject\s([\s\S]+?)\s\/>/g;
-  return _.template(template)({content});
+  return _.template(template)({
+    content,
+    injectedComponent: `{${injectComponent.join(',')}}`,
+  });
 };
