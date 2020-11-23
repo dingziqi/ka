@@ -5,7 +5,7 @@
     "baseUrl": "./src/",
     "paths": {
       "Style/*": ["./style/*"],
-      "Component": ["./component/*"]
+      "Component/*": ["./component/*"]
     }
   },
   "exclude": ["node_modules"]
