@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint '**/*.js?(x)'",
-    "dev": "webpack-dev-server",
+    "dev": "nodemon",
     "build": "cross-env NODE_ENV=production webpack",
     "debug": "cross-env DEBUG=ka:* webpack-dev-server",
     "cz": "cz"
@@ -41,6 +41,7 @@
     "commitizen": "^4.2.2",
     "cross-env": "^7.0.2",
     "css-loader": "^4.0.0",
+    "dayjs": "^1.9.6",
     "debug": "^4.2.0",
     "eslint": "^7.1.0",
     "eslint-config-airbnb": "^18.1.0",
@@ -56,6 +57,7 @@
     "lint-staged": "^10.2.8",
     "lodash": "^4.17.19",
     "marked": "^1.1.1",
+    "nodemon": "^2.0.6",
     "prerender-loader": "^1.3.0",
     "prettier": "^2.0.5",
     "react": "^16.13.1",

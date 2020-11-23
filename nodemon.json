@@ -1,0 +1,11 @@
+{
+  "verbose": true,
+  "watch": [
+    "src/"
+  ],
+  "exec": "webpack-dev-server",
+  "ecexMap": {
+    "js": "node --harmony"
+  },
+  "ext": "js,jsx,html"
+}

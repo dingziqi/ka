@@ -1,5 +1,8 @@
 ---
 title: Blogging Like a Hacker
+date: 2020/11/23 12:00:00
+tags: 测试,第一次
+category: 乱写的
 ---
 
 > 简述是啥

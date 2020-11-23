@@ -9,14 +9,11 @@ const renderer = require('./renderer');
 
 module.exports = post => {
   const { attributes, body } = fm(post);
-  const {
-    layout = 'post',
-    title,
-    date,
-    updated,
-    tags,
-    categories,
-  } = attributes;
+  const { layout = 'post', date, updated, tags, categories } = attributes;
+
+  const tagArr = tags.split(',').map(tag => (tag || '').trim());
+
+  debug('attr:', attributes);
 
   const template = fs.readFileSync(
     path.resolve(__dirname, `../src/template/${layout}.jsx`),
@@ -44,10 +41,17 @@ module.exports = post => {
     },
   });
 
-  const content = marked(body);
+  const content = marked(body).replace(/class="/g, 'className="');
+
+  debug('content:', content);
+
+  injectComponent = injectComponent.filter(
+    component => !template.match(`<${component}`),
+  );
 
   return _.template(template)({
     content,
-    injectedComponent: `{${injectComponent.join(',')}}`,
+    attributes: JSON.stringify({ ...attributes, tags: tagArr }),
+    injectedComponent: injectComponent.join(','),
   });
 };
