@@ -29,6 +29,8 @@ const Page = () => {
       }
 
       发布日期：{dayjs(date).format('YYYY-MM-DD HH:mm:ss')}
+
+      类别：{category}
     </p>
 
     <%=content%>
