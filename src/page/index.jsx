@@ -2,10 +2,6 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import { Button } from 'antd';
 
-const posts = <%=posts%>;
-
-console.log(posts);
-
 const Index = () => {
   return <div>
     <h1>index page</h1>

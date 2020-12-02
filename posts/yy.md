@@ -1,5 +1,5 @@
 ---
-title: Blogging Like a Hacker(y)
+title: Blogging Like a Hacker(yy)
 date: 2020/11/23 12:00:00
 tags: 测试,第一次
 category: 乱写的

@@ -2,45 +2,77 @@ const path = require('path');
 const glob = require('glob');
 const HtmlPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const Plugin = require('./src/scripts/plugin');
+const db = require('./src/scripts/db');
 
 const isProd = process.env.NODE_ENV === 'production';
 const postLoder = underRoot('./src/scripts/post-loader.js');
-const pageLoader = underRoot('./src/scripts/page-loader.js');
 const underPosts = pathStr => path.resolve(__dirname, './posts', pathStr);
 const underPage = pathStr => path.resolve(__dirname, './src/page', pathStr);
 
-const getEntrances = () => {
-  const pages = {};
+const getEntrances = (pattern, root) => {
+  const entrances = {};
   glob
-    .sync('**/*.js?(x)', {
-      cwd: underPage('.'),
+    .sync(pattern, {
+      cwd: root('.'),
       silent: true,
       nodir: true,
     })
     .forEach(entry => {
       const name = entry.slice(0, entry.indexOf('.'));
 
-      pages[name] = underPage(entry);
+      entrances[name] = root(entry);
     });
 
-  const posts = {};
-  glob
-    .sync('**/*.md', {
-      cwd: underPosts('.'),
-      silent: true,
-      nodir: true,
-    })
-    .forEach(entry => {
-      const name = entry.slice(0, entry.indexOf('.'));
-
-      posts[name] = underPosts(entry);
-    });
-
-  return { ...posts, ...pages };
+  return entrances;
 };
 
-const entrances = getEntrances();
+const getHtmlPlugin = (entrances, isPage) => {
+  const templateName = isPage ? 'page' : 'post';
+  return Object.keys(entrances).map(name => {
+    return new HtmlPlugin({
+      template: `${
+        isProd && !isPage
+          ? `!!prerender-loader?string&entry=${path.relative(
+              underRoot('.'),
+              entrances[name],
+            )}!`
+          : ''
+      }./src/${templateName}.template.html`,
+      templateParameters(compilation, assets, assetsTags, options) {
+        const originalParams = {
+          compilation,
+          webpackConfig: compilation.options,
+          htmlWebpackPlugin: {
+            tags: assetsTags,
+            files: assets,
+            options,
+          },
+        };
+
+        return isPage
+          ? {
+              ...originalParams,
+              posts: JSON.stringify(db.query()),
+            }
+          : originalParams;
+      },
+      filename: `${name}.html`,
+      chunks: [name],
+    });
+  });
+};
+
+const handleEntry = () => {
+  const pages = getEntrances('**/*.js?(x)', underPage);
+  const posts = getEntrances('**/*.md', underPosts);
+
+  const pagePlugin = getHtmlPlugin(pages, true);
+  const postPlugin = getHtmlPlugin(posts);
+
+  return [{ ...posts, ...pages }, [...pagePlugin, ...postPlugin]];
+};
+
+const [entrances, htmlPlugins] = handleEntry();
 
 module.exports = {
   entry: entrances,
@@ -52,7 +84,7 @@ module.exports = {
     rules: [
       {
         test: /\.js(x)$/,
-        use: ['babel-loader', pageLoader],
+        use: ['babel-loader'],
         include: underPage('.'),
       },
       {
@@ -82,25 +114,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new Plugin(),
-    new CleanWebpackPlugin(),
-    ...Object.keys(entrances).map(
-      name =>
-        new HtmlPlugin({
-          template: `${
-            isProd
-              ? `!!prerender-loader?string&entry=${path.relative(
-                  underRoot('.'),
-                  entrances[name],
-                )}!`
-              : ''
-          }./src/template.html`,
-          filename: `${name}.html`,
-          chunks: [name],
-        }),
-    ),
-  ],
+  plugins: [new CleanWebpackPlugin(), ...htmlPlugins],
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {

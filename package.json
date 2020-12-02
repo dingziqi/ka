@@ -51,6 +51,7 @@
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^2.5.0",
     "front-matter": "^4.0.2",
+    "highlight": "^0.2.4",
     "html-webpack-plugin": "^4.3.0",
     "husky": "^4.2.5",
     "less-loader": "^6.2.0",
